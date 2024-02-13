@@ -22,19 +22,23 @@ fn main() {
         .expect("Should have been able to read the file");
 
     for line in contents.lines() {
-        let mut line: Vec<&str> = line.split(' ').collect();
+        let line: Vec<&str> = line.split(' ').collect();
         for word in &line {
-            if let "//" = * word {
+            if "//" == *word || word.trim().is_empty() {
                 break;
             }
-            if let "Um" = *word {
-               let mut readLine = line.to_vec();
-               readLine.remove(0);
-               for word2 in readLine {
-                   println!("{}", word2);
-               }
-            }
+            um(word, line.to_vec());
             println!("With text:\n{word}");
+        }
+    }
+}
+
+fn um (word: &str, line: Vec<&str>) {
+    if let "Um" = word {
+        let mut read_line = line;
+        read_line.remove(0);
+        for word2 in read_line {
+            println!("{}", word2);
         }
     }
 }
