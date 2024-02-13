@@ -1,14 +1,20 @@
 use std::env;
 use std::fs;
+use std::path::Path;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
+    let file_path;
 
     if args.len() < 2 {
-        return println!("Need to specify file");
+        if Path::new("example.wltr").exists() {
+            file_path = "example.wltr";
+        } else {
+            return println!("Need to specify file");
+        }
+    } else {
+        file_path = &args[1];
     }
-
-    let file_path = &args[1];
 
     println!("Compiling file {}", file_path);
 
