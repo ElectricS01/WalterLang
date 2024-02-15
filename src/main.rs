@@ -49,7 +49,8 @@ fn um (line: Vec<&str>) {
                 break
             }
         }
-        print(print_line.to_vec());
+        print(print_line.to_vec()); 
+        return;
     }
     for word in read_line {
         println!("{}", word);
@@ -57,8 +58,6 @@ fn um (line: Vec<&str>) {
 }
 
 fn print ( line: Vec<&str>) {
-    for word in line {
-        println!("{}", word);
-    }
+    println!("{}", line.join(" "));
 }
 
