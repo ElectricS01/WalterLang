@@ -27,18 +27,38 @@ fn main() {
             if "//" == *word || word.trim().is_empty() {
                 break;
             }
-            um(word, line.to_vec());
+            if let "Um" = *word {
+                um(line.to_vec());
+                break;
+            }
             println!("With text:\n{word}");
         }
     }
 }
 
-fn um (word: &str, line: Vec<&str>) {
-    if let "Um" = word {
-        let mut read_line = line;
+fn um (line: Vec<&str>) {
+    let mut read_line = line;
+    read_line.remove(0);
+    if read_line[0] == "print" {
         read_line.remove(0);
-        for word2 in read_line {
-            println!("{}", word2);
+        let mut print_line: Vec<&str> = [].to_vec();
+        for word in &read_line {
+            if *word != "Ok" {
+                print_line.push(word);
+            } else {
+                break
+            }
         }
+        print(print_line.to_vec());
+    }
+    for word in read_line {
+        println!("{}", word);
     }
 }
+
+fn print ( line: Vec<&str>) {
+    for word in line {
+        println!("{}", word);
+    }
+}
+
