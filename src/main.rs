@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::path::Path;
+use regex::Regex;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -20,14 +21,24 @@ fn main() {
 
     let contents = fs::read_to_string(file_path)
         .expect("Should have been able to read the file");
+   
+    let multi_comment_regex = Regex::new(r"///.*?///").unwrap();
+    let comment_regex = Regex::new(r"[^\/]\/\/[^\/]+.*$").unwrap();
 
     for line in contents.lines() {
+        let line  = " ".to_owned() + line;
+        let line = comment_regex.replace_all(&line, "");
+
+        let line = multi_comment_regex.replace_all(&line, "");
+
+        let line = line.trim();
+
         let line: Vec<&str> = line.split(' ').collect();
         for word in &line {
-            if "//" == *word || word.trim().is_empty() {
+            if word.trim().is_empty() {
                 break;
             }
-            if let "Um" = *word {
+            if "Um" == *word {
                 um(line.to_vec());
                 break;
             }
