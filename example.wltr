@@ -1,5 +1,13 @@
 // example.wltr
 // Created 12/2/2024
+// Modified 12/3/2024
 // Created by ElectricS01
 
-///Print Function/// Um print Hello, World! Ok // This function will print Hello, World!
+// Test mid-line comments
+///Test print function/// Um print Test mid-line comments Ok
+
+// Test print function
+Um print Test print function Ok // This function will print "Test print function"
+
+// Test set function
+Set TestVar test var Ok // This function will set TestVar to "test"

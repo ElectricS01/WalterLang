@@ -1,6 +1,12 @@
+// main.rs
+// Created 12/2/2024
+// Modified 12/3/2024
+// Created by ElectricS01
+
 use std::env;
 use std::fs;
 use std::path::Path;
+use std::collections::HashMap;
 use regex::Regex;
 
 fn main() {
@@ -21,9 +27,13 @@ fn main() {
 
     let contents = fs::read_to_string(file_path)
         .expect("Should have been able to read the file");
-   
+
     let multi_comment_regex = Regex::new(r"///.*?///").unwrap();
     let comment_regex = Regex::new(r"[^\/]\/\/[^\/]+.*$").unwrap();
+
+    let mut vars: HashMap<String, String> = HashMap::new();
+
+    println!("{}", contents);
 
     for line in contents.lines() {
         let line  = " ".to_owned() + line;
@@ -33,18 +43,44 @@ fn main() {
 
         let line = line.trim();
 
+        println!("line: {}", line);
         let line: Vec<&str> = line.split(' ').collect();
         for word in &line {
             if word.trim().is_empty() {
                 break;
-            }
-            if "Um" == *word {
+            } else if "Um" == *word {
                 um(line.to_vec());
+                break;
+            } else if "Set" == *word {
+                set(line.to_vec(), &mut vars);
                 break;
             }
             println!("With text:\n{word}");
         }
     }
+}
+
+fn set (line: Vec<&str>, vars: &mut HashMap<String, String>) {
+    let mut read_line = line;
+    read_line.remove(0);
+
+    let name = read_line[0];
+    read_line.remove(0);
+
+    let mut print_line: Vec<&str> = [].to_vec();
+    for word in &read_line {
+        if *word != "Ok" {
+            print_line.push(word);
+        } else {
+            break
+        }
+    }
+    vars.insert(
+        name.to_string(),
+        print_line.join(" ")
+    );
+    println!("Set {} to \"{}\"", name, print_line.join(" "));
+    return;
 }
 
 fn um (line: Vec<&str>) {
