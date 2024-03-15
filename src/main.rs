@@ -26,7 +26,7 @@ fn main() {
     println!("Compiling file {}", file_path);
 
     let contents = fs::read_to_string(file_path)
-        .expect("Should have been able to read the file");
+        .expect("Failed to read the file");
 
     let multi_comment_regex = Regex::new(r"///.*?///").unwrap();
     let comment_regex = Regex::new(r"[^\/]\/\/[^\/]+.*$").unwrap();
@@ -92,7 +92,7 @@ fn um (line: Vec<&str>, vars: &mut HashMap<String, String>) {
         for word in &read_line {
             if *word != "Ok" {
                 if vars.contains_key(*word) {
-                    print_line.push(vars.get(&word.to_string()).expect("REASON"));
+                    print_line.push(vars.get(&word.to_string()).expect("Could not find a variable"));
                 } else {
                     print_line.push(word);
                 }
