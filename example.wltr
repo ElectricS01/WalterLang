@@ -11,3 +11,8 @@ Um print Test print function Ok // This function will print "Test print function
 
 // Test set function
 Set TestVar test var Ok // This function will set TestVar to "test"
+
+// Test printing set variables
+Set TestPrint a test Ok
+Um print this is TestPrint Ok
+

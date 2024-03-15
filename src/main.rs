@@ -49,7 +49,7 @@ fn main() {
             if word.trim().is_empty() {
                 break;
             } else if "Um" == *word {
-                um(line.to_vec());
+                um(line.to_vec(), &mut vars);
                 break;
             } else if "Set" == *word {
                 set(line.to_vec(), &mut vars);
@@ -83,7 +83,7 @@ fn set (line: Vec<&str>, vars: &mut HashMap<String, String>) {
     return;
 }
 
-fn um (line: Vec<&str>) {
+fn um (line: Vec<&str>, vars: &mut HashMap<String, String>) {
     let mut read_line = line;
     read_line.remove(0);
     if read_line[0] == "print" {
@@ -91,7 +91,11 @@ fn um (line: Vec<&str>) {
         let mut print_line: Vec<&str> = [].to_vec();
         for word in &read_line {
             if *word != "Ok" {
-                print_line.push(word);
+                if vars.contains_key(*word) {
+                    print_line.push(vars.get(&word.to_string()).expect("REASON"));
+                } else {
+                    print_line.push(word);
+                }
             } else {
                 break
             }
