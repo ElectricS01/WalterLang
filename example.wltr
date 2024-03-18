@@ -1,18 +1,26 @@
 // example.wltr
 // Created 12/2/2024
-// Modified 12/3/2024
+// Modified 18/3/2024
 // Created by ElectricS01
 
 // Test mid-line comments
+Um print 1. Ok
 ///Test print function/// Um print Test mid-line comments Ok
 
 // Test print function
+Um print 2. Ok
 Um print Test print function Ok // This function will print "Test print function"
 
 // Test set function
+Um print 3. Ok
 Set TestVar test var Ok // This function will set TestVar to "test"
 
 // Test printing set variables
+Um print 4. Ok
 Set TestPrint a test Ok
 Um print this is TestPrint Ok
+
+// Test multiple functions on a line
+Um print 5. Ok
+Um print Print1 Ok Um print Print2 Ok
 

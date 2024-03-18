@@ -1,13 +1,13 @@
 // main.rs
 // Created 12/2/2024
-// Modified 12/3/2024
+// Modified 18/3/2024
 // Created by ElectricS01
 
+use regex::Regex;
+use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::path::Path;
-use std::collections::HashMap;
-use regex::Regex;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -25,8 +25,7 @@ fn main() {
 
     println!("Compiling file {}", file_path);
 
-    let contents = fs::read_to_string(file_path)
-        .expect("Failed to read the file");
+    let contents = fs::read_to_string(file_path).expect("Failed to read the file");
 
     let multi_comment_regex = Regex::new(r"///.*?///").unwrap();
     let comment_regex = Regex::new(r"[^\/]\/\/[^\/]+.*$").unwrap();
@@ -36,7 +35,7 @@ fn main() {
     println!("{}", contents);
 
     for line in contents.lines() {
-        let line  = " ".to_owned() + line;
+        let line = " ".to_owned() + line;
         let line = comment_regex.replace_all(&line, "");
 
         let line = multi_comment_regex.replace_all(&line, "");
@@ -44,46 +43,41 @@ fn main() {
         let line = line.trim();
 
         println!("line: {}", line);
-        let line: Vec<&str> = line.split(' ').collect();
-        for word in &line {
-            if word.trim().is_empty() {
+        let mut line: Vec<&str> = line.split(' ').collect();
+        for _i in 0..line.len() - 1 {
+            if line[0].trim().is_empty() {
                 break;
-            } else if "Um" == *word {
+            } else if "Um" == &*line[0] {
                 um(line.to_vec(), &mut vars);
-                break;
-            } else if "Set" == *word {
+            } else if "Set" == &*line[0] {
                 set(line.to_vec(), &mut vars);
-                break;
             }
-            println!("With text:\n{word}");
+            line.remove(0);
         }
     }
 }
 
-fn set (line: Vec<&str>, vars: &mut HashMap<String, String>) {
-    let mut read_line = line;
+fn set(line: Vec<&str>, vars: &mut HashMap<String, String>) {
+    let mut read_line = line.clone();
     read_line.remove(0);
 
     let name = read_line[0];
     read_line.remove(0);
 
     let mut print_line: Vec<&str> = [].to_vec();
-    for word in &read_line {
-        if *word != "Ok" {
-            print_line.push(word);
+    for i in 0..read_line.len() {
+        if line[i] != "Ok" {
+            print_line.push(line[i]);
         } else {
-            break
+            break;
         }
     }
-    vars.insert(
-        name.to_string(),
-        print_line.join(" ")
-    );
+    vars.insert(name.to_string(), print_line.join(" "));
     println!("Set {} to \"{}\"", name, print_line.join(" "));
     return;
 }
 
-fn um (line: Vec<&str>, vars: &mut HashMap<String, String>) {
+fn um(line: Vec<&str>, vars: &mut HashMap<String, String>) {
     let mut read_line = line;
     read_line.remove(0);
     if read_line[0] == "print" {
@@ -92,15 +86,18 @@ fn um (line: Vec<&str>, vars: &mut HashMap<String, String>) {
         for word in &read_line {
             if *word != "Ok" {
                 if vars.contains_key(*word) {
-                    print_line.push(vars.get(&word.to_string()).expect("Could not find a variable"));
+                    print_line.push(
+                        vars.get(&word.to_string())
+                            .expect("Could not find a variable"),
+                    );
                 } else {
                     print_line.push(word);
                 }
             } else {
-                break
+                break;
             }
         }
-        print(print_line.to_vec()); 
+        print(print_line.to_vec());
         return;
     }
     for word in read_line {
@@ -108,7 +105,6 @@ fn um (line: Vec<&str>, vars: &mut HashMap<String, String>) {
     }
 }
 
-fn print ( line: Vec<&str>) {
+fn print(line: Vec<&str>) {
     println!("{}", line.join(" "));
 }
-
