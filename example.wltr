@@ -1,6 +1,6 @@
 // example.wltr
 // Created 12/2/2024
-// Modified 18/3/2024
+// Modified 19/3/2024
 // Created by ElectricS01
 
 // Test mid-line comments
@@ -18,7 +18,7 @@ Set TestVar test var Ok // This function will set TestVar to "test"
 // Test printing set variables
 Um print 4. Ok
 Set TestPrint a test Ok
-Um print this is TestPrint Ok
+Um print This is TestPrint Ok
 
 // Test multiple functions on a line
 Um print 5. Ok

@@ -1,6 +1,6 @@
 // main.rs
 // Created 12/2/2024
-// Modified 18/3/2024
+// Modified 19/3/2024
 // Created by ElectricS01
 
 use regex::Regex;
@@ -65,9 +65,13 @@ fn set(line: Vec<&str>, vars: &mut HashMap<String, String>) {
     read_line.remove(0);
 
     let mut print_line: Vec<&str> = [].to_vec();
+    if read_line[0] == "to" || read_line[0] == "To" || read_line[0] == "tO" {
+        read_line.remove(0);
+    }
+
     for i in 0..read_line.len() {
-        if line[i] != "Ok" {
-            print_line.push(line[i]);
+        if read_line[i] != "Ok" {
+            print_line.push(read_line[i]);
         } else {
             break;
         }
