@@ -23,7 +23,7 @@ fn main() {
         file_path = &args[1];
     }
 
-    println!("Compiling file {}", file_path);
+    println!("Compiling file {}\n", file_path);
 
     let contents = fs::read_to_string(file_path).expect("Failed to read the file");
 
@@ -32,7 +32,7 @@ fn main() {
 
     let mut vars: HashMap<String, String> = HashMap::new();
 
-    println!("{}", contents);
+    let mut trimmed_contents: String = String::new();
 
     for line in contents.lines() {
         let line = " ".to_owned() + line;
@@ -41,9 +41,13 @@ fn main() {
         let line = multi_comment_regex.replace_all(&line, "");
 
         let line = line.trim();
+        trimmed_contents += "\n";
+        trimmed_contents += line
+    }
 
-        println!("line: {}", line);
+    for line in trimmed_contents.lines() {
         let mut line: Vec<&str> = line.split(' ').collect();
+
         for _i in 0..line.len() - 1 {
             if line[0].trim().is_empty() {
                 break;
