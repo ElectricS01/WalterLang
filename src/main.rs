@@ -41,8 +41,10 @@ fn main() {
         let line = multi_comment_regex.replace_all(&line, "");
 
         let line = line.trim();
-        trimmed_contents += "\n";
-        trimmed_contents += line
+        if line != "" {
+            trimmed_contents += "\n";
+            trimmed_contents += line
+        }
     }
 
     for line in trimmed_contents.lines() {
