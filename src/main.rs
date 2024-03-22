@@ -1,6 +1,6 @@
 // main.rs
 // Created 12/2/2024
-// Modified 19/3/2024
+// Modified 22/3/2024
 // Created by ElectricS01
 
 use regex::Regex;
@@ -10,8 +10,18 @@ use std::fs;
 use std::path::Path;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let mut args: Vec<String> = env::args().collect();
+
     let file_path;
+    let debug;
+
+    let index = args.iter().position(|n| n == &"-d".to_string());
+    if index.is_some() {
+        args.remove(index.expect("Could not find index of debug tag"));
+        debug = true;
+    } else {
+        debug = false;
+    }
 
     if args.len() < 2 {
         if Path::new("example.wltr").exists() {
@@ -28,7 +38,11 @@ fn main() {
     let contents = fs::read_to_string(file_path).expect("Failed to read the file");
 
     let multi_comment_regex = Regex::new(r"///.*?///").unwrap();
-    let comment_regex = Regex::new(r"[^\/]\/\/[^\/]+.*$").unwrap();
+    let comment_regex = Regex::new(r"[^/]//[^/]+.*$").unwrap();
+
+    if debug == true {
+        println!("{}", contents);
+    }
 
     let mut vars: HashMap<String, String> = HashMap::new();
 
@@ -48,6 +62,10 @@ fn main() {
     }
 
     for line in trimmed_contents.lines() {
+        if debug == true {
+            println!("line: {}", line);
+        }
+
         let mut line: Vec<&str> = line.split(' ').collect();
 
         for _i in 0..line.len() - 1 {

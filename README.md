@@ -12,7 +12,7 @@ The official repo for the WalterLang, an interpreted typeless language built wit
 ### Feature Checklist
 - [x] Comments
 - [ ] Multi-line comments
-- [ ] `-d` Debug mode
+- [x] `-d` Debug mode
 - [x] Parsing a file name
 - [ ] WalterShell
 

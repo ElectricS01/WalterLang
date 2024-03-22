@@ -1,9 +1,13 @@
 [package]
 name = "walterlang"
-version = "0.1.1"
+version = "0.1.2"
+authors = ["ElectricS01<103579308+ElectricS01@users.noreply.github.com>"]
 edition = "2021"
+rust-version = "1.56"
+description = "WalterLang, an interpreted typeless language built with Rust"
+repository = "https://github.com/ElectricS01/WalterLang"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-regex = "1.10.3"
+regex = "1.7.3"
