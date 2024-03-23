@@ -1,6 +1,6 @@
 // main.rs
 // Created 12/2/2024
-// Modified 22/3/2024
+// Modified 23/3/2024
 // Created by ElectricS01
 
 use regex::Regex;
@@ -61,6 +61,9 @@ fn main() {
         }
     }
 
+    let mut function: String = String::new();
+    let mut read_buffer: String = String::new();
+
     for line in trimmed_contents.lines() {
         if debug == true {
             println!("line: {}", line);
@@ -68,13 +71,28 @@ fn main() {
 
         let mut line: Vec<&str> = line.split(' ').collect();
 
-        for _i in 0..line.len() - 1 {
+        for _i in 0..line.len() {
             if line[0].trim().is_empty() {
                 break;
-            } else if "Um" == &*line[0] {
-                um(line.to_vec(), &mut vars);
-            } else if "Set" == &*line[0] {
-                set(line.to_vec(), &mut vars);
+            } else if "Um" == &*line[0] || "Set" == &*line[0] {
+                if function == "Um" {
+                    um(read_buffer.split(' ').collect(), &mut vars);
+                } else if function == "Set" {
+                    set(read_buffer.split(' ').collect(), &mut vars);
+                }
+                read_buffer = String::new();
+                function = line[0].to_string();
+            } else if "Ok" == &*line[0] && function != "" {
+                if function == "Um" {
+                    um(read_buffer.split(' ').collect(), &mut vars);
+                } else {
+                    set(read_buffer.split(' ').collect(), &mut vars);
+                }
+                read_buffer = String::new();
+                function = String::new();
+            } else if function != "" {
+                read_buffer += " ";
+                read_buffer += line[0];
             }
             line.remove(0);
         }
