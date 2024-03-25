@@ -1,6 +1,6 @@
 // main.rs
 // Created 12/2/2024
-// Modified 23/3/2024
+// Modified 25/3/2024
 // Created by ElectricS01
 
 use regex::Regex;
@@ -91,10 +91,19 @@ fn main() {
                 read_buffer = String::new();
                 function = String::new();
             } else if function != "" {
-                read_buffer += " ";
+                if read_buffer.len() != 0 {
+                    if &read_buffer[read_buffer.len() - 1..] != '\n'.to_string() {
+                        read_buffer += " ";
+                    }
+                } else {
+                    read_buffer += " ";
+                }
                 read_buffer += line[0];
             }
             line.remove(0);
+        }
+        if function != "" {
+            read_buffer += "\n"
         }
     }
 }
@@ -131,7 +140,8 @@ fn um(line: Vec<&str>, vars: &mut HashMap<String, String>) {
         let mut print_line: Vec<&str> = [].to_vec();
         for word in &read_line {
             if *word != "Ok" {
-                if vars.contains_key(*word) {
+                let word = word.trim();
+                if vars.contains_key(word) {
                     print_line.push(
                         vars.get(&word.to_string())
                             .expect("Could not find a variable"),
