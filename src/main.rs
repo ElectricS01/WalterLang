@@ -1,12 +1,14 @@
 // main.rs
 // Created 12/2/2024
-// Modified 25/3/2024
+// Modified 26/3/2024
 // Created by ElectricS01
 
 use regex::Regex;
 use std::collections::HashMap;
 use std::env;
 use std::fs;
+use std::io;
+use std::io::Write;
 use std::path::Path;
 
 fn main() {
@@ -14,6 +16,7 @@ fn main() {
 
     let file_path;
     let debug;
+    let shell;
 
     let index = args.iter().position(|n| n == &"-d".to_string());
     if index.is_some() {
@@ -23,28 +26,61 @@ fn main() {
         debug = false;
     }
 
-    if args.len() < 2 {
-        if Path::new("example.wltr").exists() {
-            file_path = "example.wltr";
-        } else {
-            return println!("Need to specify file");
-        }
+    let index = args.iter().position(|n| n == &"-s".to_string());
+    if index.is_some() {
+        args.remove(index.expect("Could not find index of shell tag"));
+        shell = true;
     } else {
-        file_path = &args[1];
+        shell = false;
     }
 
-    println!("Compiling file {}\n", file_path);
+    let mut vars: HashMap<String, String> = HashMap::new();
+    let mut functions: HashMap<String, Vec<String>> = HashMap::new();
 
-    let contents = fs::read_to_string(file_path).expect("Failed to read the file");
+    if shell {
+        println!("WalterShell - WalterLang 0.2.0");
+        loop {
+            let mut line = String::new();
 
+            print!("WalterShell ");
+            let _ = io::stdout().flush();
+            io::stdin()
+                .read_line(&mut line)
+                .expect("Failed to read line");
+
+            let line = line.trim();
+
+            if line == "exit" {
+                break;
+            } else {
+                execute(debug, line.to_string(), &mut vars);
+            }
+        }
+    } else {
+        if args.len() < 2 {
+            if Path::new("example.wltr").exists() {
+                file_path = "example.wltr";
+            } else {
+                return println!("Need to specify file");
+            }
+        } else {
+            file_path = &args[1];
+        }
+
+        println!("Compiling file {}\n", file_path);
+
+        let contents = fs::read_to_string(file_path).expect("Failed to read the file");
+        execute(debug, contents, &mut vars);
+    }
+}
+
+fn execute(debug: bool, contents: String, vars: &mut HashMap<String, String>) {
     let multi_comment_regex = Regex::new(r"///.*?///").unwrap();
     let comment_regex = Regex::new(r"[^/]//[^/]+.*$").unwrap();
 
     if debug == true {
         println!("{}", contents);
     }
-
-    let mut vars: HashMap<String, String> = HashMap::new();
 
     let mut trimmed_contents: String = String::new();
 
@@ -76,17 +112,17 @@ fn main() {
                 break;
             } else if "Um" == &*line[0] || "Set" == &*line[0] {
                 if function == "Um" {
-                    um(read_buffer.split(' ').collect(), &mut vars);
+                    um(read_buffer.split(' ').collect(), vars);
                 } else if function == "Set" {
-                    set(read_buffer.split(' ').collect(), &mut vars);
+                    set(read_buffer.split(' ').collect(), vars);
                 }
                 read_buffer = String::new();
                 function = line[0].to_string();
             } else if "Ok" == &*line[0] && function != "" {
                 if function == "Um" {
-                    um(read_buffer.split(' ').collect(), &mut vars);
+                    um(read_buffer.split(' ').collect(), vars);
                 } else {
-                    set(read_buffer.split(' ').collect(), &mut vars);
+                    set(read_buffer.split(' ').collect(), vars);
                 }
                 read_buffer = String::new();
                 function = String::new();

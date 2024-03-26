@@ -15,5 +15,7 @@ The official repo for the WalterLang, an interpreted typeless language built wit
 - [ ] Multi-line comments
 - [x] `-d` Debug mode
 - [x] Parsing a file name
-- [ ] WalterShell
+- [x] WalterShell
+- [ ] WalterShell history
+- [ ] WalterShell Autocomplete
 
