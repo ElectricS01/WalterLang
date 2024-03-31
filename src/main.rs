@@ -3,10 +3,12 @@
 // Modified 26/3/2024
 // Created by ElectricS01
 
+use home::home_dir;
 use regex::Regex;
 use std::collections::HashMap;
 use std::env;
 use std::fs;
+use std::fs::OpenOptions;
 use std::io;
 use std::io::Write;
 use std::path::Path;
@@ -53,6 +55,14 @@ fn main() {
             if line == "exit" {
                 break;
             } else {
+                let f = OpenOptions::new()
+                    .create(true)
+                    .append(true)
+                    .open(home_dir().unwrap().join(".walter_history"));
+
+                writeln!(f.expect("Failed to read the file"), "{}", line)
+                    .expect("Failed to write the file");
+
                 execute(debug, line.to_string(), &mut vars);
             }
         }

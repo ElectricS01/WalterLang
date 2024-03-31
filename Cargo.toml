@@ -10,4 +10,5 @@ repository = "https://github.com/ElectricS01/WalterLang"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+home = "0.5.9"
 regex = "1.7.3"
