@@ -1,6 +1,6 @@
 // main.rs
 // Created 12/2/2024
-// Modified 26/3/2024
+// Modified 9/4/2024
 // Created by ElectricS01
 
 use home::home_dir;
@@ -9,8 +9,7 @@ use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::fs::OpenOptions;
-use std::io;
-use std::io::Write;
+use std::io::{self, Write};
 use std::path::Path;
 
 fn main() {
@@ -120,12 +119,7 @@ fn execute(debug: bool, contents: String, vars: &mut HashMap<String, String>) {
         for _i in 0..line.len() {
             if line[0].trim().is_empty() {
                 break;
-            } else if "Um" == &*line[0] || "Set" == &*line[0] {
-                if function == "Um" {
-                    um(read_buffer.split(' ').collect(), vars);
-                } else if function == "Set" {
-                    set(read_buffer.split(' ').collect(), vars);
-                }
+            } else if ("Um" == &*line[0] || "Set" == &*line[0]) && function == String::new() {
                 read_buffer = String::new();
                 function = line[0].to_string();
             } else if "Ok" == &*line[0] && function != "" {
@@ -151,6 +145,12 @@ fn execute(debug: bool, contents: String, vars: &mut HashMap<String, String>) {
         if function != "" {
             read_buffer += "\n"
         }
+    }
+
+    if function == "Um" {
+        um(read_buffer.split(' ').collect(), vars);
+    } else if function == "Set" {
+        set(read_buffer.split(' ').collect(), vars);
     }
 }
 
