@@ -1,6 +1,6 @@
 // main.rs
 // Created 12/2/2024
-// Modified 9/4/2024
+// Modified 10/4/2024
 // Created by ElectricS01
 
 use home::home_dir;
@@ -36,7 +36,6 @@ fn main() {
     }
 
     let mut vars: HashMap<String, String> = HashMap::new();
-    let mut functions: HashMap<String, Vec<String>> = HashMap::new();
 
     if shell {
         println!("WalterShell - WalterLang 0.2.0");
@@ -107,6 +106,7 @@ fn execute(debug: bool, contents: String, vars: &mut HashMap<String, String>) {
     }
 
     let mut function: String = String::new();
+    let mut sub = false;
     let mut read_buffer: String = String::new();
 
     for line in trimmed_contents.lines() {
@@ -122,28 +122,32 @@ fn execute(debug: bool, contents: String, vars: &mut HashMap<String, String>) {
             } else if ("Um" == &*line[0] || "Set" == &*line[0]) && function == String::new() {
                 read_buffer = String::new();
                 function = line[0].to_string();
-            } else if "Ok" == &*line[0] && function != "" {
+            } else if ("Um" == &*line[0] || "Set" == &*line[0]) && function != String::new() {
+                sub = true;
+            }
+            if "Ok" == &*line[0] && function != "" && !sub {
                 if function == "Um" {
-                    um(read_buffer.split(' ').collect(), vars);
+                    um(read_buffer.trim().split(' ').collect(), vars);
                 } else {
-                    set(read_buffer.split(' ').collect(), vars);
+                    set(read_buffer.trim().split(' ').collect(), vars);
                 }
                 read_buffer = String::new();
                 function = String::new();
             } else if function != "" {
+                if "Ok" == &*line[0] && function != "" {
+                    sub = false;
+                }
                 if read_buffer.len() != 0 {
                     if &read_buffer[read_buffer.len() - 1..] != '\n'.to_string() {
                         read_buffer += " ";
                     }
-                } else {
-                    read_buffer += " ";
                 }
                 read_buffer += line[0];
             }
             line.remove(0);
         }
         if function != "" {
-            read_buffer += "\n"
+            read_buffer += " \n"
         }
     }
 
@@ -165,9 +169,10 @@ fn set(line: Vec<&str>, vars: &mut HashMap<String, String>) {
     if read_line[0] == "to" || read_line[0] == "To" || read_line[0] == "tO" {
         read_line.remove(0);
     }
+    read_line[0] = read_line[0].trim();
 
     for i in 0..read_line.len() {
-        if read_line[i] != "Ok" {
+        if read_line.len() != 1 {
             print_line.push(read_line[i]);
         } else {
             break;
