@@ -38,7 +38,10 @@ fn main() {
     let mut vars: HashMap<String, String> = HashMap::new();
 
     if shell {
-        println!("WalterShell - WalterLang 0.2.0");
+        println!(
+            "WalterShell - WalterLang {}",
+            option_env!("CARGO_PKG_VERSION").unwrap_or("Unknown Version")
+        );
         loop {
             let mut line = String::new();
 
@@ -117,6 +120,15 @@ fn execute(debug: bool, contents: String, vars: &mut HashMap<String, String>) {
         let mut line: Vec<&str> = line.split(' ').collect();
 
         for _i in 0..line.len() {
+            if vars.contains_key(line[0]) {
+                execute(
+                    debug,
+                    vars.get(&line[0].to_string())
+                        .expect("Could not find a variable")
+                        .to_string(),
+                    vars,
+                );
+            }
             if line[0].trim().is_empty() {
                 break;
             } else if ("Um" == &*line[0] || "Set" == &*line[0]) && function == String::new() {

@@ -6,7 +6,7 @@ The official repo for the WalterLang, an interpreted typeless language built wit
 - [x] Seting variables
 - [x] Printing variables
 - [x] Multi-line variables
-- [ ] Defining functions
+- [x] Defining functions
 - [ ] Multiple arguments to a function
 - [ ] Maths
 
