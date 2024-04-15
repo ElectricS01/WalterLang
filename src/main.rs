@@ -184,11 +184,7 @@ fn set(line: Vec<&str>, vars: &mut HashMap<String, String>) {
     read_line[0] = read_line[0].trim();
 
     for i in 0..read_line.len() {
-        if read_line.len() != 1 {
-            print_line.push(read_line[i]);
-        } else {
-            break;
-        }
+        print_line.push(read_line[i]);
     }
     vars.insert(name.to_string(), print_line.join(" "));
     println!("Set {} to \"{}\"", name, print_line.join(" "));
