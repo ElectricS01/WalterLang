@@ -1,6 +1,6 @@
 // main.rs
 // Created 12/2/2024
-// Modified 10/4/2024
+// Modified 25/5/2024
 // Created by ElectricS01
 
 use home::home_dir;
@@ -162,6 +162,8 @@ fn execute(debug: bool, contents: String, vars: &mut HashMap<String, String>) {
             read_buffer += " \n"
         }
     }
+
+    let read_buffer = read_buffer.trim();
 
     if function == "Um" {
         um(read_buffer.split(' ').collect(), vars);
