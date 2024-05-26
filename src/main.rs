@@ -5,14 +5,14 @@
 
 use home::home_dir;
 use regex::Regex;
+use rustyline::error::ReadlineError;
+use rustyline::{DefaultEditor, Result};
 use std::collections::HashMap;
 use std::env;
 use std::fs;
-use std::fs::OpenOptions;
-use std::io::{self, Write};
 use std::path::Path;
 
-fn main() {
+fn main() -> Result<()> {
     let mut args: Vec<String> = env::args().collect();
 
     let file_path;
@@ -42,37 +42,50 @@ fn main() {
             "WalterShell - WalterLang {}",
             option_env!("CARGO_PKG_VERSION").unwrap_or("Unknown Version")
         );
+        let mut rl = DefaultEditor::new()?;
+        let history_path = home_dir().unwrap().join(".walter_history");
+
+        if rl.load_history(&history_path).is_err() {
+            println!("No previous history.");
+        }
         loop {
-            let mut line = String::new();
+            let readline = rl.readline("WalterShell ");
+            match readline {
+                Ok(line) => {
+                    let line = line.trim();
+                    if rl.add_history_entry(line).is_err() {
+                        println!("Could not save history");
+                    }
 
-            print!("WalterShell ");
-            let _ = io::stdout().flush();
-            io::stdin()
-                .read_line(&mut line)
-                .expect("Failed to read line");
-
-            let line = line.trim();
-
-            if line == "exit" {
-                break;
-            } else {
-                let f = OpenOptions::new()
-                    .create(true)
-                    .append(true)
-                    .open(home_dir().unwrap().join(".walter_history"));
-
-                writeln!(f.expect("Failed to read the file"), "{}", line)
-                    .expect("Failed to write the file");
-
-                execute(debug, line.to_string(), &mut vars);
+                    if line == "exit" {
+                        break;
+                    } else {
+                        execute(debug, line.to_string(), &mut vars);
+                    }
+                }
+                Err(ReadlineError::Interrupted) => {
+                    break;
+                }
+                Err(ReadlineError::Eof) => {
+                    break;
+                }
+                Err(err) => {
+                    println!("Error: {:?}", err);
+                    break;
+                }
             }
         }
+        if rl.save_history(&history_path).is_err() {
+            println!("Could not save history");
+        }
+        Ok(())
     } else {
         if args.len() < 2 {
             if Path::new("example.wltr").exists() {
                 file_path = "example.wltr";
             } else {
-                return println!("Need to specify file");
+                println!("Need to specify file");
+                return Ok(());
             }
         } else {
             file_path = &args[1];
@@ -82,6 +95,7 @@ fn main() {
 
         let contents = fs::read_to_string(file_path).expect("Failed to read the file");
         execute(debug, contents, &mut vars);
+        Ok(())
     }
 }
 
