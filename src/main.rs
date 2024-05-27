@@ -1,6 +1,6 @@
 // main.rs
 // Created 12/2/2024
-// Modified 25/5/2024
+// Modified 27/5/2024
 // Created by ElectricS01
 
 use home::home_dir;

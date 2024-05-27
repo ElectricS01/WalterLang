@@ -3,7 +3,7 @@ name = "walterlang"
 version = "0.4.0"
 authors = ["ElectricS01<103579308+ElectricS01@users.noreply.github.com>"]
 edition = "2021"
-rust-version = "1.60"
+rust-version = "1.63"
 description = "WalterLang, an interpreted typeless language built with Rust"
 repository = "https://github.com/ElectricS01/WalterLang"
 
