@@ -145,14 +145,16 @@ fn execute(debug: bool, contents: String, vars: &mut HashMap<String, String>) {
             }
             if line[0].trim().is_empty() {
                 break;
-            } else if ("Um" == &*line[0] || "Set" == &*line[0]) && function == String::new() {
+            } else if matches!(&*line[0].to_lowercase(), "um" | "set") && function == String::new()
+            {
                 read_buffer = String::new();
                 function = line[0].to_string();
-            } else if ("Um" == &*line[0] || "Set" == &*line[0]) && function != String::new() {
+            } else if matches!(&*line[0].to_lowercase(), "um" | "set") && function != String::new()
+            {
                 sub = true;
             }
             if "Ok" == &*line[0] && function != "" && !sub {
-                if function == "Um" {
+                if function.to_lowercase() == "um" {
                     um(read_buffer.trim().split(' ').collect(), vars);
                 } else {
                     set(read_buffer.trim().split(' ').collect(), vars);
@@ -176,14 +178,6 @@ fn execute(debug: bool, contents: String, vars: &mut HashMap<String, String>) {
             read_buffer += " \n"
         }
     }
-
-    let read_buffer = read_buffer.trim();
-
-    if function == "Um" {
-        um(read_buffer.split(' ').collect(), vars);
-    } else if function == "Set" {
-        set(read_buffer.split(' ').collect(), vars);
-    }
 }
 
 fn set(line: Vec<&str>, vars: &mut HashMap<String, String>) {
@@ -193,24 +187,27 @@ fn set(line: Vec<&str>, vars: &mut HashMap<String, String>) {
     let name = read_line[0];
     read_line.remove(0);
 
-    let mut print_line: Vec<&str> = [].to_vec();
-    if read_line[0] == "to" || read_line[0] == "To" || read_line[0] == "tO" {
+    let mut var_line: Vec<&str> = [].to_vec();
+    if matches!(&*read_line[0].to_lowercase(), "to" | "as") {
         read_line.remove(0);
     }
     read_line[0] = read_line[0].trim();
 
     for i in 0..read_line.len() {
-        print_line.push(read_line[i]);
+        var_line.push(read_line[i]);
     }
-    vars.insert(name.to_string(), print_line.join(" "));
-    println!("Set {} to \"{}\"", name, print_line.join(" "));
+    vars.insert(name.to_string(), var_line.join(" "));
+    println!("Set {} to \"{}\"", name, var_line.join(" "));
     return;
 }
 
 fn um(line: Vec<&str>, vars: &mut HashMap<String, String>) {
     let mut read_line = line;
     read_line.remove(0);
-    if read_line[0] == "print" {
+    if matches!(
+        &*read_line[0].to_lowercase(),
+        "print" | "println" | "log" | "display"
+    ) {
         read_line.remove(0);
         let mut print_line: Vec<&str> = [].to_vec();
         for word in &read_line {

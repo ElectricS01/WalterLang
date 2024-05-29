@@ -30,11 +30,15 @@ Set MultilineVar to This is a
 multiline variable Ok
 Um print MultilineVar Ok
 
-// Test functions
+// Test case insensitive functions
 Um print 7. Ok
+sEt testVar tO This is a weird variable Ok
+UM PrinT testVar Ok
+
+// Test functions
+Um print 8. Ok
 Set TestFunction to
 Um print This is a function Ok
 Ok
 
 TestFunction
-
